@@ -2,6 +2,30 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+class BaseModel(db.Model):
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_all(cls):
+        get_all = cls.query.all()
+        return get_all
+
+    @classmethod
+    def get_by_id(cls, id):
+        user = cls.query.get(id)
+        return user
+
+    def disable_user(self):
+        self.is_active = False
+        db.session.commit()
+
+    def get_all_favourites(cls, id):
+        get_favourites = cls.query.filter_by(id=user_id)
+        return get_favourites
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -17,3 +41,4 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+
